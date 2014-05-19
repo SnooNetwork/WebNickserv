@@ -1,0 +1,5 @@
+<ul>
+<% @nicks.each do |nick| %>
+	<li><%= nick %>  - <%=  link_to 'Drop User',user_path(nick), data: { confirm: 'Are you sure?'}, :method => :delete unless nick==cookies[:login]%></li>
+<% end %>
+</ul>

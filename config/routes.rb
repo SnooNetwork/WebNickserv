@@ -7,9 +7,15 @@ SnoonetAdmin::Application.routes.draw do
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
+  
   get 'users/login'=>'users#login'
   get 'users/list'=>'users#list'
   post 'users/login'=>'users#login'
+  delete 'users/:id' => 'users#delete'
+  get 'users/:id' => 'users#info', as: :user
+  get 'memos'=>'memos#list'
+  delete 'memos/:id' => 'memos#delete'
+  get 'memos/:id'=>'memos#read', as: :memo
   root :controller => 'static', :action => '/' 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

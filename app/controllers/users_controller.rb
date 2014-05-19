@@ -14,7 +14,7 @@ class UsersController < ApplicationController
       cookies[:login]={:value=>params[:login][:username],:expires=>1.hour.from_now}
       cookies[:token]={:value=>result,:expires=>1.hour.from_now}
       flash[:success]="Logged you in."
-      redirect_to(session[:return_to] || default)
+      redirect_to(session[:return_to] || root_path)
       session[:return_to]=nil
       rescue XMLRPC::FaultException=>error
         flash.now[:error]=error.faultString
@@ -25,8 +25,8 @@ class UsersController < ApplicationController
     end
   end
   def list
-    server=XMLRPC::Client.new2(Rails.configuration.atheme_server)
-    result=server.call("atheme.command",cookies[:token],cookies[:login],request.remote_ip,"NICKSERV","info",cookies[:login])
+    result = call_authenticated_command "NICKSERV","info",cookies[:login]
+    
     results=result.split(/\n/)
     nickLine=''
     results.each do |res|
@@ -36,5 +36,31 @@ class UsersController < ApplicationController
        end
     end
     @nicks=nickLine.split(' ')
+  end
+  
+  def delete
+    call_authenticated_command  "NICKSERV","ungroup",params[:id]
+    redirect_to user_path(cookies[:login])
+  end
+  
+  def info
+    begin
+      result = call_authenticated_command  "NICKSERV","info",params[:id]
+      results=result.split(/\n/)
+      @info=Hash.new
+      results.each do |res|
+        parts=res.split(':')
+        @info[parts[0].strip]=parts[1]
+      end
+    rescue XMLRPC::FaultException => error
+      if(error.faultCode==4)
+        flash[:error]="User Not Registered"
+        if(not request.env["HTTP_REFERER"].nil? and not request.env["HTTP_REFERER"]==request.fullpath)
+          redirect_to :back
+          return
+        end 
+        redirect_to root_path
+      end
+    end
   end
 end

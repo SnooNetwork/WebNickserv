@@ -1,0 +1,5 @@
+<ul>
+	<% @memos.each do |memo| %>
+	<li><%= link_to  memo[:id],memo_path(memo[:id]) %> - From: <%= link_to memo[:name],user_path(memo[:name]) %> Sent at: <%= memo[:date]%></li>
+	<% end %>
+</ul>

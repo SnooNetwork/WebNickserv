@@ -1,0 +1,7 @@
+Memo From: <%= link_to @name,user_path(@name)%> at <%= @date %>
+<p>
+	<% @memo.each do |mem|%>
+	<%= mem %> <br />
+	<% end %>
+</p>
+<%=  link_to 'Delete Memo',memo_path(@id), data: { confirm: 'Are you sure?'}, :method => :delete %>
