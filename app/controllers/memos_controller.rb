@@ -1,6 +1,10 @@
 require "pp"
 class MemosController < ApplicationController
   
+  
+  def new
+    
+  end
   def list
     memoRegex=/\- (?<id>\d+) From: (?<name>[a-zA-Z0-9\-_]+) Sent: (?<date>[\w\: ]+)/
     result=call_authenticated_command "MEMOSERV","LIST"
